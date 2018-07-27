@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <include layout="@layout/toolbar_layout"/>
+    <com.example.lrd.views.DropDownMenu
+        android:id="@+id/my_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:DividerColor="@color/gray"
+        app:TextSize="14dp"
+        app:UnSelectTextColor="@color/black"
+        app:SelectTextColor="@color/red"
+        app:SelectImage="@drawable/icon_up"
+        app:UnSelectImage="@drawable/icon_down"
+        />
+</LinearLayout>

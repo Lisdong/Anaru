@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.lrd">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/><!-- 震动 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />     <!-- 获取mac地址作为用户的备用唯一标识 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />      <!-- 获取用户手机的IMEI，用来唯一的标识用户。 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /><!-- 缓存资源优先存入SDcard -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/><!-- 安装权限 -->
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"/><!--指纹权限 -->
+
+    <application
+        android:name=".ui.MyApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/MyTheme">
+
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${CHANNEL_VALUE}" />
+
+        <meta-data
+            android:name="ENVIRONMENT"
+            android:value="${ENVIRONMENT_VALUE}" />
+
+        <activity android:name=".ui.SplashActivity" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.WelcomeActivity" android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.MainActivity" android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.FingerPrintActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".ui.PhotoPickActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.NotificationActivity" />
+        <activity android:name=".ui.DropDownMenuActivity" />
+        <activity android:name=".ui.AnimationActivity" />
+
+        <service android:name=".update.DownAPKService"/>
+        <service android:name=".update.DownloadSignatureService"/>
+        <!--裁剪活动-->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.lrd.provider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"
+                />
+        </provider>
+
+    </application>
+
+</manifest>
