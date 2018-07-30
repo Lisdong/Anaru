@@ -54,14 +54,11 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initListener() {
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                if (position == 0)startActivity(FingerPrintActivity.class);
-                if (position == 1)startActivity(PhotoPickActivity.class);
-                if (position == 2)startActivity(NotificationActivity.class);
-                if (position == 3)startActivity(DropDownMenuActivity.class);
-            }
+        mAdapter.setOnItemClickListener((BaseQuickAdapter adapter, View view, int position)-> {
+            if (position == 0)startActivity(FingerPrintActivity.class);
+            if (position == 1)startActivity(PhotoPickActivity.class);
+            if (position == 2)startActivity(NotificationActivity.class);
+            if (position == 3)startActivity(DropDownMenuActivity.class);
         });
     }
 

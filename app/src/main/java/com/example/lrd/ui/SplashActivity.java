@@ -126,7 +126,7 @@ public class SplashActivity extends BaseActivity {
                 }else if ("0".equals(forceUpdate)){//原为1
                     //不强制更新
                     new MaterialDialog.Builder(SplashActivity.this)
-                            .title("有新版本了，是否更新？")
+                            .title("有新版本了，是否更新？(测试功能，不建议更新)")
                             .positiveText("更新")
                             .negativeText("不更新")
                             .cancelable(false)
@@ -296,7 +296,7 @@ public class SplashActivity extends BaseActivity {
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         super.onPermissionsGranted(requestCode, perms);
-
+        init();
     }
 
     //
