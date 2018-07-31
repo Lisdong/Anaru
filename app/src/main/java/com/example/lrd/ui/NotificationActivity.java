@@ -1,6 +1,5 @@
 package com.example.lrd.ui;
 
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,7 +11,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RemoteViews;
-import android.widget.TextView;
+import android.support.v4.app.NotificationCompat;
 
 import com.example.lrd.R;
 import com.example.lrd.model.ToolbarHelper;
@@ -49,13 +48,13 @@ public class NotificationActivity extends BaseActivity {
 
 	//单文本
 	private void sendNotification(){
-		final Notification.Builder builder = getNotification("文本","这是单文本notification");
+		final NotificationCompat.Builder builder = getNotification("文本","这是单文本notification");
 		getManager().notify(1, builder.build());
 	}
 
 	//进度条
 	private void sendProgressNotification(){
-		final Notification.Builder builder = getNotification("进度条","这是含有进度条的notification");
+		final NotificationCompat.Builder builder = getNotification("进度条","这是含有进度条的notification");
 		getManager().notify(2, builder.build());
 		new Thread(new Runnable() {
 			@Override
@@ -75,14 +74,12 @@ public class NotificationActivity extends BaseActivity {
 	}
 
 	//自定义notification
-	@TargetApi(Build.VERSION_CODES.N)
 	private void sendCustomNotification(){
-		Notification.Builder notification = getNotification(null, null);
+		NotificationCompat.Builder notification = getNotification(null, null);
 		RemoteViews contentView = new RemoteViews(getPackageName(),R.layout.notification_my_layout);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this,100,new Intent(this,NotificationActivity.class),PendingIntent.FLAG_CANCEL_CURRENT);
 		contentView.setOnClickPendingIntent(R.id.btn_go,pendingIntent);
 		notification.setCustomContentView(contentView);
-
 		getManager().notify(3,notification.build());
 	}
 
@@ -106,8 +103,8 @@ public class NotificationActivity extends BaseActivity {
 		return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	}
 
-	private Notification.Builder getNotification(String title,String text){
-		Notification.Builder builder;
+	private NotificationCompat.Builder getNotification(String title,String text){
+		NotificationCompat.Builder builder;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
 			NotificationChannel channel = new NotificationChannel("channel_这是id", "这是name", NotificationManager.IMPORTANCE_DEFAULT);
 			channel.canBypassDnd();//可否绕过请勿打扰模式
@@ -124,10 +121,10 @@ public class NotificationActivity extends BaseActivity {
 
 			getManager().createNotificationChannel(channel);
 
-			builder = new Notification.Builder(this, "channel_这是id");
+			builder = new NotificationCompat.Builder(this, "channel_这是id");
 			if (!TextUtils.isEmpty(text))builder.setContentText(text);
 		}else {
-			builder = new Notification.Builder(this);
+			builder = new NotificationCompat.Builder(this,null);
 			//魅族5.1 text内不能含有 ！
 			if (!TextUtils.isEmpty(text))builder.setContentText(text);
 		}

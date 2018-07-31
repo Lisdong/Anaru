@@ -26,6 +26,7 @@ public class Url {
     }
 
     public static final String UPDATE_APK = BASE_HOU + "clients/versionupdate";  //更新apk
+    public static final String UPDATE_APK = BASE_HOU + "clients/versionupdate";  //更新apk---仅ENVIRONMENT_INTERNAL环境可用
 
     public static final String TRANS_GET_TAB_DATA = BASE_HOU + "clients/nav";  //获取导航标签数据
 }
