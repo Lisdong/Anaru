@@ -242,4 +242,8 @@ public class DeviceUtils {
         String status = Environment.getExternalStorageState();
         return status.equals(Environment.MEDIA_MOUNTED);
     }
+    public static int convertDpToPixel(Context context, int dp) {
+        float density = context.getResources().getDisplayMetrics().density;
+        return Math.round((float) dp * density);
+    }
 }

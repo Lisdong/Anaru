@@ -11,4 +11,9 @@
         <attr name="MaskColor" format="color"/><!-- 遮罩层颜色 -->
         <attr name="MenuBackgroundColor" format="color"/><!-- 菜单背景颜色 -->
     </declare-styleable>
+    <declare-styleable name="RefreshView">
+        <attr name="type" format="enum">
+            <enum name="sun" value="0" />
+        </attr>
+    </declare-styleable>
 </resources>
