@@ -29,9 +29,7 @@ public class Url {
 
     public static final String TRANS_GET_TAB_DATA = BASE_HOU + "clients/nav";  //获取导航标签数据
 
-    public static int index = 1; //页码
-
-    public static final String EXTERNAL_URL = "http://www.wanandroid.com/article/list/"+String.valueOf(index)+"/json";//外部数据
+    public static String EXTERNAL_URL = "http://www.wanandroid.com/article/list/";//外部数据
 
     public static final String EXTERNAL_BANNER_URL = "http://www.wanandroid.com/banner/json";
 }

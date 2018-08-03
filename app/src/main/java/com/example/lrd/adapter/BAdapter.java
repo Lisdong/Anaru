@@ -22,5 +22,7 @@ public class BAdapter extends BaseQuickAdapter<Bbean.DataBean.DatasBean, BaseVie
 	@Override
 	protected void convert(BaseViewHolder helper, Bbean.DataBean.DatasBean item) {
 		helper.setText(R.id.item_brvah_tv,item.getAuthor());
+		helper.setText(R.id.item_brvah_context,item.getTitle());
+		helper.setText(R.id.item_brvah_time,item.getNiceDate());
 	}
 }

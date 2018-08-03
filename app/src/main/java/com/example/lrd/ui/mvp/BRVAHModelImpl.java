@@ -26,9 +26,6 @@ import com.example.lrd.views.ViewPagerScroller;
 import com.example.lrd.views.refresh_view.PullToRefreshView;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.EventBusBuilder;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +45,7 @@ public class BRVAHModelImpl implements BRVAModel{
 	private ViewPagerAdapter mVAdapter;
 	private LinearLayout mBox;//指示器容器
 	private ViewPager mViewPager;
+	private int currentIndex = 1;
 
 	public void init(Context context, PullToRefreshView refreshView, RecyclerView recyclerView) {
 		this.mContext = context;
@@ -55,7 +53,8 @@ public class BRVAHModelImpl implements BRVAModel{
 		this.mRecyclerView = recyclerView;
 
 		initView();
-		initData();
+		getBannerData();
+		getListData();
 		initListener();
 	}
 
@@ -63,26 +62,38 @@ public class BRVAHModelImpl implements BRVAModel{
 		RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false);
 		mRecyclerView.setLayoutManager(layoutManager);
 		mBAdapter = new BAdapter(R.layout.item_brvah_layout,mData);
+		mBAdapter.openLoadAnimation();//默认为渐显效果
 		mRecyclerView.setAdapter(mBAdapter);
 
 		mBAdapter.addHeaderView(getHeaderView());
 	}
 
-	private void initData() {
-		//列表数据
-		HttpManager.getInstance().requestPost(Url.EXTERNAL_URL, Bbean.class, null, new RequestBeanCallback<Bbean>() {
-			@Override
-			public void onSuccess(Bbean bean) {
-				List<Bbean.DataBean.DatasBean> datas = bean.getData().getDatas();
-				mBAdapter.setNewData(datas);
-			}
+	//添加头部
+	private View getHeaderView() {
+		View view = LayoutInflater.from(mContext).inflate(R.layout.banner_layout, null);
+		mViewPager = view.findViewById(R.id.viewPager_banner);
+		mBox = view.findViewById(R.id.banner_box);
+		ImageView point = view.findViewById(R.id.banner_point);
+		setIndicator(point);
 
-			@Override
-			public void onError(String error) {
-				ToastUtil.getInstance(mContext).showToast("获取数据错误"+error);
-			}
-		});
-		//轮播图数据
+		//让翻页动画减速
+		ViewPagerScroller pagerScroller = new ViewPagerScroller(mContext);
+		pagerScroller.setScrollDuration(1000);
+		pagerScroller.initViewPagerScroll(mViewPager);
+
+		mVAdapter = new ViewPagerAdapter(mContext,mDataBanner);
+		mViewPager.setAdapter(mVAdapter);
+
+		//设置banner定时轮播
+		mViewPager.setCurrentItem(mViewPager.getAdapter().getCount() / 2);
+		mViewPager.postDelayed(()-> {
+			EventBus.getDefault().post(new MessageEvent("Banner"));
+		},4000);
+		return view;
+	}
+
+	//轮播图数据
+	private void getBannerData() {
 		HttpManager.getInstance().requestPost(Url.EXTERNAL_BANNER_URL, BannerBean.class, null, new RequestBeanCallback<BannerBean>() {
 			@Override
 			public void onSuccess(BannerBean bean) {
@@ -97,28 +108,52 @@ public class BRVAHModelImpl implements BRVAModel{
 			}
 		});
 	}
+	//列表数据
+	private void getListData() {
+		HttpManager.getInstance().requestPost(Url.EXTERNAL_URL+currentIndex+"/json", Bbean.class, null, new RequestBeanCallback<Bbean>() {
+			@Override
+			public void onSuccess(Bbean bean) {
+				List<Bbean.DataBean.DatasBean> datas = bean.getData().getDatas();
+				if (datas != null && datas.size() > 0){
+					if (currentIndex == 1){
+						mBAdapter.setNewData(datas);
+					}else {
+						mBAdapter.addData(datas);
+						mBAdapter.loadMoreComplete();
+					}
+					currentIndex = currentIndex + 1;
+				}
+			}
 
-	//添加头部
-	private View getHeaderView() {
-		View view = LayoutInflater.from(mContext).inflate(R.layout.banner_layout, null);
-		mViewPager = view.findViewById(R.id.viewPager_banner);
-		mBox = view.findViewById(R.id.banner_box);
-		ImageView point = view.findViewById(R.id.banner_point);
-		setIndicator(point);
+			@Override
+			public void onError(String error) {
+				ToastUtil.getInstance(mContext).showToast("获取数据错误"+error);
+			}
+		});
+	}
 
-		ViewPagerScroller pagerScroller = new ViewPagerScroller(mContext);
-		pagerScroller.setScrollDuration(1000);
-		pagerScroller.initViewPagerScroll(mViewPager);
+	//监听
+	private void initListener() {
+		//下拉刷新
+		mRefresh.setOnRefreshListener(()-> {
+			mRefresh.postDelayed(() -> {
+				currentIndex = 1;
+				getBannerData();
+				getListData();
+				mRefresh.setRefreshing(false);
+			},2000);
+		});
 
-		mVAdapter = new ViewPagerAdapter(mContext,mDataBanner);
-		mViewPager.setAdapter(mVAdapter);
+		//上拉加载
+		mBAdapter.setOnLoadMoreListener(this::getListData,mRecyclerView);
+		//默认第一次加载会调用  加载更多，此方法控制第一次不进入加载回调
+		mBAdapter.disableLoadMoreIfNotFullPage();
 
-		//设置banner定时轮播
-		mViewPager.setCurrentItem(mViewPager.getAdapter().getCount() / 2);
-		mViewPager.postDelayed(()-> {
-			EventBus.getDefault().post(new MessageEvent("Banner"));
-		},4000);
-		return view;
+        //item点击事件
+		mBAdapter.setOnItemClickListener((BaseQuickAdapter adapter, View view, int position)-> {
+			List<Bbean.DataBean.DatasBean> data = adapter.getData();
+			ToastUtil.getInstance(mContext).showToast(data.get(position).getLink());
+		});
 	}
 
 	//设置指示器
@@ -159,18 +194,7 @@ public class BRVAHModelImpl implements BRVAModel{
 		}
 	}
 
-	private void initListener() {
-		mRefresh.setOnRefreshListener(()-> {
-			mRefresh.postDelayed(() -> {
-				initData();
-				mRefresh.setRefreshing(false);
-			},2000);
-		});
-		mBAdapter.setOnItemClickListener((BaseQuickAdapter adapter, View view, int position)-> {
-			List<Bbean.DataBean.DatasBean> data = adapter.getData();
-			ToastUtil.getInstance(mContext).showToast(data.get(position).getLink());
-		});
-	}
+
 	//设置无限轮播
 	public void setBannerItem() {
 		int currentItem = mViewPager.getCurrentItem();
