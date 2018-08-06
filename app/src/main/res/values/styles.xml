@@ -39,4 +39,13 @@
         <item name="android:textSize">14sp</item>
         <item name="actionMenuTextColor">@color/black</item>
     </style>
+
+    <style name="StyleProgressBarMini" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:maxHeight">100dp</item>
+        <item name="android:minHeight">2dp</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">@android:drawable/progress_indeterminate_horizontal</item>
+        <item name="android:progressDrawable">@drawable/progress_bg</item>
+
+    </style>
 </resources>

@@ -79,7 +79,8 @@ public class SplashActivity extends BaseActivity {
         if (EasyPermissions.hasPermissions(this, perms)) {
             //...
             ToastUtil.getInstance(this).showToast("获取权限成功");
-            checkVersion();
+            //checkVersion();
+            getTabDataFromServer();
         } else {
             //...
             EasyPermissions.requestPermissions(this, "应用程序需要文件读取权限",
@@ -104,7 +105,7 @@ public class SplashActivity extends BaseActivity {
                     ToastUtil.getInstance(SplashActivity.this).showToast("不更新");
                     getTabDataFromServer();
                     return;
-                }if ("-0".equals(forceUpdate)){//原为0
+                }if ("0".equals(forceUpdate)){//原为0
                     //强制更新
                     new MaterialDialog.Builder(SplashActivity.this)
                             .title("有一些必要的更新")
@@ -123,10 +124,10 @@ public class SplashActivity extends BaseActivity {
                                     android.os.Process.killProcess(android.os.Process.myPid());
                                 }
                             }).show();
-                }else if ("0".equals(forceUpdate)){//原为1
+                }else if ("1".equals(forceUpdate)){//原为1
                     //不强制更新
                     new MaterialDialog.Builder(SplashActivity.this)
-                            .title("有新版本了，是否更新？(测试功能，不建议更新)")
+                            .title("有新版本了，是否更新？(内网测试功能，非内网不建议更新)")
                             .positiveText("更新")
                             .negativeText("不更新")
                             .cancelable(false)

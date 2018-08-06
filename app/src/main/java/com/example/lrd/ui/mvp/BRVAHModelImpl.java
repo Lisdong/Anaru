@@ -1,6 +1,7 @@
 package com.example.lrd.ui.mvp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,7 @@ import com.example.lrd.bean.Bbean;
 import com.example.lrd.call.MessageEvent;
 import com.example.lrd.call.RequestBeanCallback;
 import com.example.lrd.http.Url;
+import com.example.lrd.ui.WebViewActivity;
 import com.example.lrd.utils.DeviceUtils;
 import com.example.lrd.utils.HttpManager;
 import com.example.lrd.utils.ToastUtil;
@@ -152,7 +154,10 @@ public class BRVAHModelImpl implements BRVAModel{
         //item点击事件
 		mBAdapter.setOnItemClickListener((BaseQuickAdapter adapter, View view, int position)-> {
 			List<Bbean.DataBean.DatasBean> data = adapter.getData();
-			ToastUtil.getInstance(mContext).showToast(data.get(position).getLink());
+			Intent intent = new Intent();
+			intent.setClass(mContext, WebViewActivity.class);
+			intent.putExtra("URL",data.get(position).getLink());
+			mContext.startActivity(intent);
 		});
 	}
 

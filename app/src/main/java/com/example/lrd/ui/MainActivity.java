@@ -42,6 +42,7 @@ public class MainActivity extends BaseActivity {
             else if (i == 2)mainBean.setName("8.0通知栏");
             else if (i == 3)mainBean.setName("下拉菜单");
             else if (i == 4)mainBean.setName("BRVAH");
+            else if (i == 5)mainBean.setName("WebActivity");
             else mainBean.setName("无");
             mStr.add(mainBean);
         }
@@ -60,6 +61,7 @@ public class MainActivity extends BaseActivity {
             if (position == 2)startActivity(NotificationActivity.class);
             if (position == 3)startActivity(DropDownMenuActivity.class);
             if (position == 4)startActivity(BRVAHActivity.class);
+            if (position == 5)startActivity(MyProjectActivity.class);
         });
     }
 
