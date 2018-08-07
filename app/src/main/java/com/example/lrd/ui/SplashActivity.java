@@ -78,7 +78,7 @@ public class SplashActivity extends BaseActivity {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE,};
         if (EasyPermissions.hasPermissions(this, perms)) {
             //...
-            ToastUtil.getInstance(this).showToast("获取权限成功");
+            //ToastUtil.getInstance(this).showToast("获取权限成功");
             //checkVersion();
             getTabDataFromServer();
         } else {

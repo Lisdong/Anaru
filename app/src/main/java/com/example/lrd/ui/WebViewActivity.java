@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -62,7 +63,7 @@ public class WebViewActivity extends BaseActivity {
 	private void initView() {
 		String url = getIntent().getStringExtra("URL");
 
-		mWebView = new BridgeWebView(this);
+		mWebView = new BridgeWebView(getApplicationContext());
 		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 		mFl.addView(mWebView,params);
 
@@ -159,7 +160,7 @@ public class WebViewActivity extends BaseActivity {
 		//settings.supportMultipleWindows();//多窗口
 		settings.setAllowFileAccess(true);//设置可以访问文件
 		settings.setNeedInitialFocus(true);//当webview调用requestFocus时为webview设置节点
-		settings.setBuiltInZoomControls(true);//设置支持缩放
+		settings.setBuiltInZoomControls(false);//设置支持缩放按钮
 		settings.setJavaScriptCanOpenWindowsAutomatically(true);//支持通过JS打开新窗口
 		settings.setLoadWithOverviewMode(true);//缩放至屏幕的大小
 		settings.setLoadsImagesAutomatically(true);//支持自动加载图片
@@ -181,9 +182,21 @@ public class WebViewActivity extends BaseActivity {
 
 	@Override
 	protected void onDestroy() {
+		if( mWebView!=null) {
+			ViewParent parent = mWebView.getParent();
+			if (parent != null) {
+				((ViewGroup) parent).removeView(mWebView);
+			}
+
+			mWebView.stopLoading();
+			// 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
+			mWebView.getSettings().setJavaScriptEnabled(false);
+			mWebView.clearHistory();
+			mWebView.clearView();
+			mWebView.removeAllViews();
+			mWebView.destroy();
+
+		}
 		super.onDestroy();
-		mFl.removeView(mWebView);
-		mWebView.removeAllViews();
-		mWebView.destroy();
 	}
 }
